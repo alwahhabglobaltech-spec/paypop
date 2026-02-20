@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "PayPalSansSmall-Regular", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #ffffff;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .top-banner {
+            background: linear-gradient(to right, #0070ba, #1546a0);
+            color: #ffffff;
+            text-align: center;
+            padding: 18px 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .banner-text {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .phone-number {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fafafa;
+        }
+
+        .content-area {
+            max-width: 440px;
+            margin: 0 auto;
+            background: #ffffff;
+            min-height: calc(100vh - 220px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .logo-section {
+            text-align: center;
+            padding: 40px 20px 30px;
+            background: #ffffff;
+            border-bottom: 1px solid #cbd2d6;
+        }
+
+        .paypal-logo-img {
+            height: 70px;
+            max-width: 100%;
+            display: inline-block;
+        }
+
+        .payment-section {
+            padding: 50px 40px 60px;
+            text-align: center;
+            background: #ffffff;
+        }
+
+        .payment-header {
+            font-size: 28px;
+            color: #2c2e2f;
+            font-weight: 300;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .payment-amount {
+            font-size: 48px;
+            color: #2c2e2f;
+            font-weight: 300;
+            margin: 24px 0 8px;
+            letter-spacing: -1px;
+        }
+
+        .payment-recipient {
+            font-size: 18px;
+            color: #2c2e2f;
+            font-weight: 400;
+            margin-bottom: 50px;
+        }
+
+        .spinner-box {
+            margin: 40px 0;
+        }
+
+        .paypal-loader {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto;
+            border: 5px solid #cbd2d6;
+            border-top-color: #0070ba;
+            border-radius: 50%;
+            animation: rotate 0.8s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-text {
+            font-size: 16px;
+            color: #6c7378;
+            margin-top: 32px;
+            line-height: 1.6;
+        }
+
+        .security-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding: 10px 20px;
+            background: #f5f7fa;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #6c7378;
+        }
+
+        .lock-svg {
+            width: 14px;
+            height: 14px;
+            fill: #6c7378;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            display: none;
+            padding: 50px 40px 60px;
+            text-align: center;
+            background: #ffffff;
+        }
+
+        .success-screen.show {
+            display: block;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-check {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 32px;
+            background: #ffffff;
+            border: 4px solid #2a9d4e;
+            border-radius: 50%;
+            position: relative;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-check::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 14px;
+            width: 10px;
+            height: 24px;
+            border: solid #2a9d4e;
+            border-width: 0 4px 4px 0;
+            transform: rotate(45deg);
+        }
+
+        .success-title {
+            font-size: 32px;
+            color: #2c2e2f;
+            font-weight: 300;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .redirect-info {
+            font-size: 15px;
+            color: #6c7378;
+            margin-top: 20px;
+        }
+
+        .footer-area {
+            background: #f5f7fa;
+            border-top: 1px solid #cbd2d6;
+            padding: 32px 20px;
+        }
+
+        .footer-links {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: nowrap;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .footer-link {
+            color: #0070ba;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 0 8px;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .footer-link:hover {
+            color: #003087;
+            text-decoration: underline;
+        }
+
+        .footer-separator {
+            color: #cbd2d6;
+            user-select: none;
+        }
+
+        .footer-copyright {
+            text-align: center;
+            color: #6c7378;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .top-banner {
+                font-size: 12px;
+                padding: 14px 15px;
+            }
+
+            .content-area {
+                box-shadow: none;
+            }
+
+            .logo-section {
+                padding: 30px 20px 20px;
+            }
+
+            .paypal-logo-img {
+                height: 50px;
+            }
+
+            .payment-section {
+                padding: 40px 24px 50px;
+            }
+
+            .payment-header {
+                font-size: 20px;
+            }
+
+            .payment-amount {
+                font-size: 36px;
+            }
+
+            .payment-recipient {
+                font-size: 16px;
+                margin-bottom: 40px;
+            }
+
+            .paypal-loader {
+                width: 56px;
+                height: 56px;
+            }
+
+            .status-text {
+                font-size: 15px;
+            }
+
+            .success-screen {
+                padding: 40px 24px 50px;
+            }
+
+            .success-check {
+                width: 64px;
+                height: 64px;
+                margin-bottom: 28px;
+            }
+
+            .success-check::before {
+                left: 22px;
+                top: 12px;
+                width: 8px;
+                height: 20px;
+            }
+
+            .success-title {
+                font-size: 26px;
+            }
+
+            .redirect-info {
+                font-size: 14px;
+            }
+
+            .footer-area {
+                padding: 20px 15px;
+            }
+
+            .footer-links {
+                font-size: 11px;
+                gap: 2px;
+            }
+
+            .footer-link {
+                padding: 0 6px;
+                font-size: 11px;
+            }
+
+            .footer-separator {
+                font-size: 11px;
+            }
+
+            .footer-copyright {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .payment-amount {
+                font-size: 32px;
+            }
+
+            .payment-header {
+                font-size: 18px;
+            }
+
+            .payment-recipient {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-banner">
+        <div class="banner-text">
+            You're protected by PayPal Purchase Protection. All transactions are monitored 24/7. Help Line Number <span class="phone-number">+1 (605) 600-5010</span>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="content-area">
+            <div class="logo-section">
+                <img src="./logo.png" alt="PayPal" class="paypal-logo-img">
+            </div>
+
+            <!-- Processing State -->
+            <div id="processingView" class="payment-section">
+                <div class="payment-header">Securely sending</div>
+                <div class="payment-amount">$499.09 USD</div>
+                <div class="payment-recipient">to Apple Gift Card</div>
+
+                <div class="spinner-box">
+                    <div class="paypal-loader"></div>
+                </div>
+
+                <div class="status-text">
+                    Please do not close this window.<br>
+                    Your transaction is being processed with enhanced security.
+                </div>
+
+                <div class="security-info">
+                    <svg class="lock-svg" viewBox="0 0 24 24">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/>
+                    </svg>
+                    Secure payment processing
+                </div>
+            </div>
+
+            <!-- Success State -->
+            <div id="successView" class="success-screen">
+                <div class="success-check"></div>
+                <div class="success-title">Transaction Complete</div>
+                <div class="redirect-info">Redirecting to transaction details...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-area">
+        <div class="footer-links">
+            <a href="#" class="footer-link">Help Center</a>
+            <span class="footer-separator">|</span>
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <span class="footer-separator">|</span>
+            <a href="#" class="footer-link">Terms & Conditions</a>
+        </div>
+        <div class="footer-copyright">© PayPal 2025. All rights reserved.</div>
+    </div>
+
+    <script>
+        const processingView = document.getElementById('processingView');
+        const successView = document.getElementById('successView');
+        
+        // Unlock audio on first user interaction
+        let audioUnlocked = false;
+        const unlockAudio = () => {
+            if (!audioUnlocked) {
+                const tempAudio = new Audio('./payment.mp3');
+                tempAudio.play().then(() => {
+                    tempAudio.pause();
+                    tempAudio.currentTime = 0;
+                }).catch(() => {});
+                audioUnlocked = true;
+            }
+        };
+        
+        // Listen for any interaction to unlock audio
+        ['click', 'touchstart', 'touchend', 'mousedown', 'keydown'].forEach(event => {
+            document.addEventListener(event, unlockAudio, { once: true });
+        });
+
+        // Processing duration: 5 seconds
+        setTimeout(() => {
+            processingView.style.display = 'none';
+            successView.classList.add('show');
+            
+            // Create and play audio
+            const audio = new Audio('./payment.mp3');
+            audio.volume = 1.0;
+            
+            audio.play().then(() => {
+                console.log('Sound played successfully!');
+            }).catch(error => {
+                console.log('Audio blocked - waiting for user interaction');
+            });
+
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'details.html';
+            }, 2000);
+        }, 5000);
+    </script>
+</body>
+</html>

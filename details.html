@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Payment Receipt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "PayPalSansSmall-Regular", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #fafafa;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .top-banner {
+            background: linear-gradient(to right, #0070ba, #1546a0);
+            color: #ffffff;
+            text-align: center;
+            padding: 18px 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .banner-text {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .phone-number {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fafafa;
+        }
+
+        .receipt-container {
+            max-width: 440px;
+            margin: 0 auto;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .logo-section {
+            text-align: center;
+            padding: 40px 20px 30px;
+            background: #ffffff;
+            border-bottom: 1px solid #cbd2d6;
+        }
+
+        .paypal-logo-img {
+            height: 70px;
+            max-width: 100%;
+            display: inline-block;
+        }
+
+        .receipt-content {
+            padding: 40px;
+            background: #ffffff;
+        }
+
+        .receipt-title {
+            font-size: 32px;
+            color: #003087;
+            font-weight: 400;
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .detail-section {
+            margin: 30px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 18px 0;
+            border-bottom: 1px solid #e1e7ec;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 16px;
+            color: #2c2e2f;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: #687173;
+            font-weight: 400;
+            text-align: right;
+        }
+
+        .status-completed {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .amount-highlight {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c2e2f;
+        }
+
+        .info-box {
+            background: #fff8e6;
+            border-left: 4px solid #ffc439;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c2e2f;
+            margin-bottom: 8px;
+        }
+
+        .info-text {
+            font-size: 15px;
+            color: #2c2e2f;
+            line-height: 1.6;
+        }
+
+        .fraud-notice {
+            font-size: 15px;
+            color: #2c2e2f;
+            line-height: 1.7;
+            padding: 20px 0;
+        }
+
+        .warning-box {
+            background: #fff5f5;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .warning-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .warning-icon {
+            width: 24px;
+            height: 24px;
+            fill: #dc3545;
+            flex-shrink: 0;
+        }
+
+        .warning-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #dc3545;
+        }
+
+        .warning-text {
+            font-size: 14px;
+            color: #721c24;
+            line-height: 1.7;
+        }
+
+        .contact-box {
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .contact-message {
+            font-size: 15px;
+            color: #2c2e2f;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .contact-phone {
+            font-size: 24px;
+            color: #dc3545;
+            font-weight: 600;
+            margin: 12px 0;
+        }
+
+        .contact-note {
+            font-size: 13px;
+            color: #687173;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .download-btn {
+            background: #0070ba;
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 16px 40px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin: 30px 0;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 112, 186, 0.2);
+        }
+
+        .download-btn:hover {
+            background: #005ea6;
+            box-shadow: 0 4px 12px rgba(0, 112, 186, 0.3);
+        }
+
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+
+        .footer-area {
+            background: #f5f7fa;
+            border-top: 1px solid #cbd2d6;
+            padding: 32px 20px;
+        }
+
+        .footer-links {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: nowrap;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .footer-link {
+            color: #0070ba;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 0 8px;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .footer-link:hover {
+            color: #003087;
+            text-decoration: underline;
+        }
+
+        .footer-separator {
+            color: #cbd2d6;
+            user-select: none;
+        }
+
+        .footer-copyright {
+            text-align: center;
+            color: #6c7378;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .top-banner {
+                font-size: 12px;
+                padding: 14px 15px;
+            }
+
+            .receipt-container {
+                box-shadow: none;
+            }
+
+            .logo-section {
+                padding: 30px 20px 20px;
+            }
+
+            .paypal-logo-img {
+                height: 50px;
+            }
+
+            .receipt-content {
+                padding: 30px 20px;
+            }
+
+            .receipt-title {
+                font-size: 26px;
+                margin-bottom: 30px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+                padding: 15px 0;
+            }
+
+            .detail-label,
+            .detail-value {
+                font-size: 15px;
+            }
+
+            .amount-highlight {
+                font-size: 16px;
+            }
+
+            .contact-phone {
+                font-size: 20px;
+            }
+
+            .download-btn {
+                font-size: 15px;
+                padding: 14px 30px;
+            }
+
+            .footer-area {
+                padding: 20px 15px;
+            }
+
+            .footer-links {
+                font-size: 11px;
+                gap: 2px;
+            }
+
+            .footer-link {
+                padding: 0 6px;
+                font-size: 11px;
+            }
+
+            .footer-separator {
+                font-size: 11px;
+            }
+
+            .footer-copyright {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .receipt-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-banner">
+        <div class="banner-text">
+            You're protected by PayPal Purchase Protection. All transactions are monitored 24/7. Help Line Number <span class="phone-number">+1 (605) 600-5010</span>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="receipt-container">
+            <div class="logo-section">
+                <img src="./logo.png" alt="PayPal" class="paypal-logo-img">
+            </div>
+
+            <div class="receipt-content">
+                <h1 class="receipt-title">PayPal Payment Receipt</h1>
+
+                <div class="detail-section">
+                    <div class="detail-row">
+                        <div class="detail-label">Transaction ID:</div>
+                        <div class="detail-value">PP-15145475125</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">Date:</div>
+                        <div class="detail-value">October 16, 2025</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">Status:</div>
+                        <div class="detail-value status-completed">Completed</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">Sent To:</div>
+                        <div class="detail-value">Apple Gift Card</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">Payment Method:</div>
+                        <div class="detail-value">Credit Card linked Via Paypal</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">Amount Sent:</div>
+                        <div class="detail-value amount-highlight">$499.09 USD</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-title">Important:</div>
+                    <div class="info-text">
+                        This transaction may take up to <strong>24 hours</strong> to appear on your bank or card statement.
+                    </div>
+                </div>
+
+                <div class="fraud-notice">
+                    If you did not authorize this payment or believe it is suspicious, please contact us immediately and report this transaction as fraudulent.
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-header">
+                        <svg class="warning-icon" viewBox="0 0 24 24">
+                            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                        </svg>
+                        <div class="warning-title">Security Warning:</div>
+                    </div>
+                    <div class="warning-text">
+                        Do not click unknown links or share your OTP, PayPal email, or password with anyone — even if they claim to be from PayPal.
+                    </div>
+                </div>
+
+                <div class="contact-box">
+                    <div class="contact-message">To cancel this transaction, you must call PayPal Customer Care immediately:</div>
+                    <div class="contact-phone">+1 (605) 600-5010</div>
+                    <div class="contact-note">No online cancellation forms are available.</div>
+                </div>
+
+                <button class="download-btn" onclick="window.print()">Download Receipt (PDF)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-area">
+        <div class="footer-links">
+            <a href="#" class="footer-link">Help Center</a>
+            <span class="footer-separator">|</span>
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <span class="footer-separator">|</span>
+            <a href="#" class="footer-link">Terms & Conditions</a>
+        </div>
+        <div class="footer-copyright">© PayPal 2025. All rights reserved.</div>
+    </div>
+</body>
+</html>
